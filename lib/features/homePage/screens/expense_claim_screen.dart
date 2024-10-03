@@ -1,7 +1,3 @@
-import 'package:country_currency_pickers/country.dart';
-import 'package:country_currency_pickers/country_picker_dialog.dart';
-import 'package:country_currency_pickers/currency_picker_dialog.dart';
-import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:expenseclaimmodule/common/button_global.dart';
 import 'package:expenseclaimmodule/common/common.dart';
 import 'package:expenseclaimmodule/common/contstants.dart';
@@ -10,7 +6,6 @@ import 'package:expenseclaimmodule/features/homePage/provider/expanse_claim_prov
 import 'package:expenseclaimmodule/features/homePage/widgets/expense_claim_screen_widgets.dart';
 import 'package:expenseclaimmodule/utils/dummy_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseClaimScreen extends StatelessWidget {
@@ -24,9 +19,9 @@ class ExpenseClaimScreen extends StatelessWidget {
       child:
           Consumer<ExpanseClaimProvider>(builder: (context, provider, child) {
         total = 0;
-        claims.forEach((e) {
+        for (var e in claims) {
           total = total + e["amount"];
-        });
+        }
         return Scaffold(
           backgroundColor: kMainColor,
           appBar: AppBar(
@@ -53,7 +48,7 @@ class ExpenseClaimScreen extends StatelessWidget {
             },
             child: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 width: SizeConfigure.screenWidth,
                 height: SizeConfigure.screenHeight - 130,
                 decoration: const BoxDecoration(
@@ -184,7 +179,7 @@ class ExpenseClaimScreen extends StatelessWidget {
                             onTap: () {
                               myAddClaimBottomSheet(context, provider);
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.add_box,
                               size: 30,
                             ))
@@ -196,240 +191,17 @@ class ExpenseClaimScreen extends StatelessWidget {
                             itemCount: claims.length,
                             itemBuilder: (context, index) {
                               Map claimDetails = claims[index];
-                              return Slidable(
-                                endActionPane: ActionPane(
-                                  extentRatio: .55,
-                                  motion: const DrawerMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      icon: Icons.delete,
-                                      label: 'Delete',
-                                      onPressed: (BuildContext context) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: myText("Delete item?"),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Cancel")),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        claims.removeAt(index);
-                                                        Navigator.pop(context);
-                                                        provider.rebuild();
-                                                      },
-                                                      child: Text("Ok"))
-                                                ],
-                                              );
-                                            });
-                                      },
-                                    ),
-                                    SlidableAction(
-                                      backgroundColor: Colors.white,
-                                      key: UniqueKey(),
-                                      foregroundColor: Colors.black,
-                                      icon: Icons.edit,
-                                      label: 'Edit',
-                                      onPressed: (BuildContext context) {
-                                        myAddClaimBottomSheet(context, provider,
-                                            cliamDetails: claimDetails,
-                                            isToEdit: true,
-                                            claimIndex: index);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                child: Container(
-                                  width: SizeConfigure.screenWidth,
-                                  margin: EdgeInsets.all(1),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.all(5),
-                                        height:
-                                            SizeConfigure.widthMultiplier * 13,
-                                        width:
-                                            SizeConfigure.widthMultiplier * 13,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        child: Center(
-                                          child: Icon(getIcon(
-                                              claimDetails["claimType"])),
-                                        ),
-                                      ),
-                                      mySpacer(
-                                          width: SizeConfigure.widthMultiplier *
-                                              3),
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                SizedBox(
-                                                  width: SizeConfigure
-                                                          .widthMultiplier *
-                                                      40,
-                                                  child: myText(
-                                                    claimDetails["claimType"],
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 2,
-                                                  ),
-                                                ),
-                                                myText(
-                                                    "₹${claimDetails["amount"]}",
-                                                    fontWeight: FontWeight.bold,
-                                                    maxLength: 10,
-                                                    color: kMainColor)
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                myText(
-                                                    toDDMMMYYY(
-                                                        claimDetails["date"]),
-                                                    fontSize: 1.5,
-                                                    color: Colors.grey[600],
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                                InkWell(
-                                                  onTap: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            title: myText(
-                                                                "Cost Center Allocation",
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 2),
-                                                            content: SizedBox(
-                                                              height: SizeConfigure
-                                                                      .widthMultiplier *
-                                                                  90,
-                                                              width: SizeConfigure
-                                                                      .widthMultiplier *
-                                                                  90,
-                                                              child:
-                                                                  SingleChildScrollView(
-                                                                child:
-                                                                    Container(
-                                                                  decoration: BoxDecoration(
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          200],
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(10))),
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              5),
-                                                                  margin: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              5),
-                                                                  child: Column(
-                                                                    children: [
-                                                                      myCostAllocationWidget(
-                                                                          "Refered Employee",
-                                                                          "Muhammed faris kk gg gyfycf fuf "),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "T1",
-                                                                          "Muhammed faris kk"),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "T2",
-                                                                          "Not Applicable"),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "T3",
-                                                                          "Functional expenses "),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "T4",
-                                                                          "Finance"),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "Cost Center (%)",
-                                                                          "100%"),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "percentage",
-                                                                          "100%"),
-                                                                      Divider(),
-                                                                      myCostAllocationWidget(
-                                                                          "Cost Center Amount",
-                                                                          "2000"),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            actions: [
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                      "Cancel")),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                      "Ok")),
-                                                            ],
-                                                          );
-                                                        });
-                                                  },
-                                                  child: myText(
-                                                      "View Allocation",
-                                                      fontSize: 1.3,
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255,
-                                                              122,
-                                                              203,
-                                                              240)),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return myClaimDetailsWidget(
+                                  index, provider, claimDetails, context);
                             })),
                     mySpacer(height: SizeConfigure.heightMultiplier * 1.5),
                     Row(
                       children: [
                         Container(
-                          margin: EdgeInsets.all(5),
+                          margin: const EdgeInsets.all(5),
                           height: SizeConfigure.heightMultiplier * 6,
                           width: SizeConfigure.widthMultiplier * 30,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                           child: Column(
@@ -445,7 +217,7 @@ class ExpenseClaimScreen extends StatelessWidget {
                         Expanded(
                           child: ButtonGlobal(
                               buttontext: "submit",
-                              buttonDecoration: BoxDecoration(
+                              buttonDecoration: const BoxDecoration(
                                   color: kMainColor,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
@@ -461,38 +233,5 @@ class ExpenseClaimScreen extends StatelessWidget {
         );
       }),
     );
-  }
-
-  Container myCostAllocationWidget(String title, String value) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: myText(title, fontSize: 1.2),
-              ),
-              mySpacer(width: SizeConfigure.widthMultiplier * 2),
-              Expanded(child: myText(value, fontSize: 1.2))
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-IconData getIcon(String text) {
-  switch (text) {
-    case "food":
-      return Icons.lunch_dining;
-    case "travel":
-      return Icons.two_wheeler;
-    case "accommodation":
-      return Icons.cabin;
-
-    default:
-      return Icons.token;
   }
 }

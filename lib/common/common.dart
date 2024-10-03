@@ -26,8 +26,8 @@ Text myText(String text,
     style: GoogleFonts.manrope(
         color: color,
         fontSize: fontSize != null
-            ? SizeConfigure.textMultiplier! * fontSize
-            : SizeConfigure.textMultiplier! * 1.6,
+            ? SizeConfigure.textMultiplier * fontSize
+            : SizeConfigure.textMultiplier * 1.6,
         fontWeight: fontWeight),
   );
 }
@@ -97,7 +97,7 @@ TypeAheadField myTypeHeadDropDown(
               focusNode: focusNode,
               decoration: InputDecoration(
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 18, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
                 suffixIcon: Visibility(
                     visible: controller.text.isNotEmpty,
                     child: IconButton(
@@ -128,10 +128,7 @@ TypeAheadField myTypeHeadDropDown(
         padding: const EdgeInsets.all(10.0),
         color: Colors.white,
         child:
-            myText(sugession, textOverflow: TextOverflow.visible, fontSize: 2
-            
-            
-            ),
+            myText(sugession, textOverflow: TextOverflow.visible, fontSize: 2),
       );
     },
     onSelected: (workGroup) {
@@ -152,7 +149,8 @@ TextField myTextfield(String hintText,
     maxLines: maxLines,
     keyboardType: keyboardType,
     decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 18),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
         hintText: hintText,
         labelStyle: const TextStyle(
             fontWeight: FontWeight.normal, color: Colors.black45),
@@ -257,7 +255,7 @@ class _TestState extends State<AutoNumberingTextField> {
           }
         },
         child: TextField(
-          style: TextStyle(fontSize: SizeConfigure.textMultiplier! * 1.8),
+          style: TextStyle(fontSize: SizeConfigure.textMultiplier * 1.8),
           controller: widget.controller,
           minLines: widget.minLines,
           maxLines: widget.maxLines,

@@ -1,6 +1,4 @@
-import 'package:country_currency_pickers/country.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ExpanseClaimProvider extends ChangeNotifier {
   bool isIndividulal = true;

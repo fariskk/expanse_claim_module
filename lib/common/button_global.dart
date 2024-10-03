@@ -10,7 +10,8 @@ class ButtonGlobal extends StatelessWidget {
   var onPressed;
 
   ButtonGlobal(
-      {required this.buttontext,
+      {super.key,
+      required this.buttontext,
       this.buttonDecoration,
       required this.onPressed});
 
@@ -44,7 +45,8 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
   final Color buttonTextColor;
 
   ButtonGlobalWithoutIcon(
-      {required this.buttontext,
+      {super.key,
+      required this.buttontext,
       required this.buttonDecoration,
       required this.onPressed,
       required this.buttonTextColor});

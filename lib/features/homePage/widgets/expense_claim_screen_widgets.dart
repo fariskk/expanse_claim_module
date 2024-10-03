@@ -1,12 +1,11 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:camera/camera.dart';
 import 'package:expenseclaimmodule/common/common.dart';
 import 'package:expenseclaimmodule/common/contstants.dart';
 import 'package:expenseclaimmodule/common/size_configure.dart';
 import 'package:expenseclaimmodule/features/homePage/provider/expanse_claim_provider.dart';
-import 'package:expenseclaimmodule/features/homePage/screens/expense_claim_screen.dart';
 import 'package:expenseclaimmodule/utils/dummy_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +19,7 @@ List<Widget> myTabs(BuildContext context, ExpanseClaimProvider provider) {
         provider.rebuild();
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.only(bottom: 5),
         height: 50,
         width: MediaQuery.of(context).size.width / 2,
@@ -44,7 +43,7 @@ List<Widget> myTabs(BuildContext context, ExpanseClaimProvider provider) {
         provider.rebuild();
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.only(bottom: 5),
         height: 50,
         width: MediaQuery.of(context).size.width / 2,
@@ -88,12 +87,12 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
               FocusScope.of(context).requestFocus(FocusNode());
             },
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               width: SizeConfigure.screenWidth,
               height: MediaQuery.of(context).viewInsets.bottom != 0
                   ? SizeConfigure.heightMultiplier * 70
                   : 450,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -148,10 +147,10 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                             }
                           },
                           child: Container(
-                            padding: EdgeInsets.all(19),
+                            padding: const EdgeInsets.all(19),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
+                                    const BorderRadius.all(Radius.circular(4)),
                                 border: Border.all(
                                     color: kBorderColorTextField, width: 1.2)),
                             child: Row(
@@ -164,7 +163,7 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                                     width: SizeConfigure.widthMultiplier * 2),
                                 Visibility(
                                   visible: provider.claimDate != null,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.cancel,
                                     size: 18,
                                   ),
@@ -192,7 +191,7 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                                         provider.attachment = null;
                                         provider.rebuild();
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.cancel,
                                         size: 15,
                                       ))
@@ -212,7 +211,7 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                                           provider.rebuild();
                                         }
                                       },
-                                      icon: Icon(Icons.camera)),
+                                      icon: const Icon(Icons.camera)),
                                   IconButton(
                                       onPressed: () async {
                                         final ImagePicker picker =
@@ -225,7 +224,7 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                                           provider.rebuild();
                                         }
                                       },
-                                      icon: Icon(Icons.image)),
+                                      icon: const Icon(Icons.image)),
                                 ],
                               ),
                       ],
@@ -262,7 +261,7 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
                           provider.rebuild();
                         }
                       },
-                      buttonDecoration: BoxDecoration(
+                      buttonDecoration: const BoxDecoration(
                           color: kMainColor,
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
@@ -273,4 +272,205 @@ void myAddClaimBottomSheet(BuildContext context, ExpanseClaimProvider provider,
           );
         });
       });
+}
+
+SizedBox myCostAllocationWidget(String title, String value) {
+  return SizedBox(
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: myText(title, fontSize: 1.2),
+            ),
+            mySpacer(width: SizeConfigure.widthMultiplier * 2),
+            Expanded(child: myText(value, fontSize: 1.2))
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+Slidable myClaimDetailsWidget(int index, ExpanseClaimProvider provider,
+    Map<dynamic, dynamic> claimDetails, BuildContext context) {
+  return Slidable(
+    endActionPane: ActionPane(
+      extentRatio: .55,
+      motion: const DrawerMotion(),
+      children: [
+        SlidableAction(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          icon: Icons.delete,
+          label: 'Delete',
+          onPressed: (BuildContext context) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: myText("Delete item?"),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel")),
+                      TextButton(
+                          onPressed: () {
+                            claims.removeAt(index);
+                            Navigator.pop(context);
+                            provider.rebuild();
+                          },
+                          child: const Text("Ok"))
+                    ],
+                  );
+                });
+          },
+        ),
+        SlidableAction(
+          backgroundColor: Colors.white,
+          key: UniqueKey(),
+          foregroundColor: Colors.black,
+          icon: Icons.edit,
+          label: 'Edit',
+          onPressed: (BuildContext context) {
+            myAddClaimBottomSheet(context, provider,
+                cliamDetails: claimDetails, isToEdit: true, claimIndex: index);
+          },
+        ),
+      ],
+    ),
+    child: Container(
+      width: SizeConfigure.screenWidth,
+      margin: const EdgeInsets.all(1),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(5),
+            height: SizeConfigure.widthMultiplier * 13,
+            width: SizeConfigure.widthMultiplier * 13,
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            child: Center(
+              child: Icon(getIcon(claimDetails["claimType"])),
+            ),
+          ),
+          mySpacer(width: SizeConfigure.widthMultiplier * 3),
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: SizeConfigure.widthMultiplier * 40,
+                      child: myText(
+                        claimDetails["claimType"],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 2,
+                      ),
+                    ),
+                    myText("₹${claimDetails["amount"]}",
+                        fontWeight: FontWeight.bold,
+                        maxLength: 10,
+                        color: kMainColor)
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    myText(toDDMMMYYY(claimDetails["date"]),
+                        fontSize: 1.5,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w700),
+                    myViewAllocationWidget(context)
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+InkWell myViewAllocationWidget(BuildContext context) {
+  return InkWell(
+    onTap: () {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: myText("Cost Center Allocation",
+                  fontWeight: FontWeight.bold, fontSize: 2),
+              content: SizedBox(
+                height: SizeConfigure.widthMultiplier * 90,
+                width: SizeConfigure.widthMultiplier * 90,
+                child: SingleChildScrollView(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: Column(
+                      children: [
+                        myCostAllocationWidget("Refered Employee",
+                            "Muhammed faris kk gg gyfycf fuf "),
+                        const Divider(),
+                        myCostAllocationWidget("T1", "Muhammed faris kk"),
+                        const Divider(),
+                        myCostAllocationWidget("T2", "Not Applicable"),
+                        const Divider(),
+                        myCostAllocationWidget("T3", "Functional expenses "),
+                        const Divider(),
+                        myCostAllocationWidget("T4", "Finance"),
+                        const Divider(),
+                        myCostAllocationWidget("Cost Center (%)", "100%"),
+                        const Divider(),
+                        myCostAllocationWidget("percentage", "100%"),
+                        const Divider(),
+                        myCostAllocationWidget("Cost Center Amount", "2000"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel")),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Ok")),
+              ],
+            );
+          });
+    },
+    child: myText("View Allocation",
+        fontSize: 1.3, color: const Color.fromARGB(255, 122, 203, 240)),
+  );
+}
+
+IconData getIcon(String text) {
+  switch (text) {
+    case "food":
+      return Icons.lunch_dining;
+    case "travel":
+      return Icons.two_wheeler;
+    case "accommodation":
+      return Icons.cabin;
+
+    default:
+      return Icons.token;
+  }
 }
